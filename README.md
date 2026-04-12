@@ -20,3 +20,6 @@ Firebase/API - Used for fetching live currency data.
 Material Design 3 - For a sleek, modern look and feel.
 
 **📸 Preview**
+![](D:\Smart Toolkit1.jpeg)
+![](D:\Smart Toolkit2.jpeg)
+![](D:\Smart Toolkit3.jpeg)
