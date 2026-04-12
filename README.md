@@ -1,4 +1,5 @@
-**Smart Toolkit** 🛠️
+****Smart Toolkit** 🛠️**
+
 Smart Toolkit is a lightweight, all-in-one Android utility app designed to handle your daily calculations and conversions with ease. No clutter, just the tools you need.
 
 **🚀 Key Features**
@@ -18,8 +19,3 @@ XML - For a responsive and intuitive UI.
 Firebase/API - Used for fetching live currency data.
 
 Material Design 3 - For a sleek, modern look and feel.
-
-**📸 Preview**
-![](D:\Smart Toolkit1.jpeg)
-![](D:\Smart Toolkit2.jpeg)
-![](D:\Smart Toolkit3.jpeg)
