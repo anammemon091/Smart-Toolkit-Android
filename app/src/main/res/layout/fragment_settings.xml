@@ -95,7 +95,7 @@
                 android:id="@+id/aboutDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Currency Converter App\nVersion 1.0\nDeveloped by Anam Memon"
+                android:text="Smart Toolkit App\nVersion 1.0\nDeveloped by Anam Memon"
                 android:textSize="14sp"
                 android:textColor="?attr/colorOnBackground"/>
         </LinearLayout>
