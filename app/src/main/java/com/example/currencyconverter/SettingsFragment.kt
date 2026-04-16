@@ -5,67 +5,66 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Switch
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import com.example.currencyconverter.databinding.FragmentSettingsBinding
 
 class SettingsFragment : Fragment() {
 
-    private lateinit var darkModeSwitch: Switch
-    private lateinit var currencySpinner: Spinner
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
 
+    // Lists for Spinners
     private val currencyList = listOf("USD", "PKR", "EUR", "INR", "GBP")
+    private val unitList = listOf("Meter", "Kilometer", "Millimeter")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_settings, container, false)
+    ): View {
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        darkModeSwitch = view.findViewById(R.id.darkModeSwitch)
-        currencySpinner = view.findViewById(R.id.defaultCurrencySpinner)
-
         val sharedPrefs = requireActivity()
             .getSharedPreferences("settings", Context.MODE_PRIVATE)
 
-        // Spinner setup
-        val adapter = ArrayAdapter(requireContext(),
+        // --- 1. Currency Spinner Setup ---
+        val currAdapter = ArrayAdapter(requireContext(),
             android.R.layout.simple_spinner_dropdown_item, currencyList)
-        currencySpinner.adapter = adapter
+        binding.defaultCurrencySpinner.adapter = currAdapter
 
         val savedCurrency = sharedPrefs.getString("default_currency", "USD")
-        val position = currencyList.indexOf(savedCurrency)
-        if (position >= 0) currencySpinner.setSelection(position)
+        binding.defaultCurrencySpinner.setSelection(currencyList.indexOf(savedCurrency))
 
-        currencySpinner.onItemSelectedListener = object :
-            android.widget.AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedCurrency = currencyList[position]
-                sharedPrefs.edit().putString("default_currency", selectedCurrency).apply()
+        binding.defaultCurrencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, v: View?, pos: Int, id: Long) {
+                sharedPrefs.edit().putString("default_currency", currencyList[pos]).apply()
             }
-            override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        // Dark Mode
-        val isDarkMode = sharedPrefs.getBoolean("dark_mode", false)
-        darkModeSwitch.isChecked = isDarkMode
+        // --- 2. Unit Spinner Setup ---
+        val unitAdapter = ArrayAdapter(requireContext(),
+            android.R.layout.simple_spinner_dropdown_item, unitList)
+        binding.defaultUnitSpinner.adapter = unitAdapter
 
-        AppCompatDelegate.setDefaultNightMode(
-            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES
-            else AppCompatDelegate.MODE_NIGHT_NO
-        )
+        val savedUnit = sharedPrefs.getString("default_unit", "Meter")
+        binding.defaultUnitSpinner.setSelection(unitList.indexOf(savedUnit))
 
-        darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
-            sharedPrefs.edit().putBoolean("dark_mode", isChecked).apply()
-            AppCompatDelegate.setDefaultNightMode(
-                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
-                else AppCompatDelegate.MODE_NIGHT_NO
-            )
+        binding.defaultUnitSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, v: View?, pos: Int, id: Long) {
+                sharedPrefs.edit().putString("default_unit", unitList[pos]).apply()
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

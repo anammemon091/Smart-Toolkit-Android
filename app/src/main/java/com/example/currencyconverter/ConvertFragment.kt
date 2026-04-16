@@ -2,47 +2,52 @@ package com.example.currencyconverter
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import com.example.currencyconverter.databinding.FragmentConvertBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.widget.ImageButton
 
-class ConvertFragment : Fragment(R.layout.fragment_convert) {
+class ConvertFragment : Fragment() {
 
-    private lateinit var amountInput: EditText
-    private lateinit var fromCurrency: Spinner
-    private lateinit var toCurrency: Spinner
-    private lateinit var resultText: TextView
-    private lateinit var convertBtn: Button
-    private lateinit var swapBtn: ImageButton
+    private var _binding: FragmentConvertBinding? = null
+    private val binding get() = _binding!!
+
     private val currencyList = listOf("USD", "PKR", "EUR", "INR", "GBP")
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentConvertBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        amountInput = view.findViewById(R.id.amountInput)
-        fromCurrency = view.findViewById(R.id.fromCurrency)
-        toCurrency = view.findViewById(R.id.toCurrency)
-        resultText = view.findViewById(R.id.resultText)
-        convertBtn = view.findViewById(R.id.convertBtn)
-        swapBtn = view.findViewById(R.id.swapBtn)
+        binding.btnBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
 
         val adapter = ArrayAdapter(requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
             currencyList)
 
-        fromCurrency.adapter = adapter
-        toCurrency.adapter = adapter
+        binding.fromCurrency.adapter = adapter
+        binding.toCurrency.adapter = adapter
 
         // Default selection
-        fromCurrency.setSelection(0) // USD
-        toCurrency.setSelection(1)   // PKR
+        binding.fromCurrency.setSelection(0) // USD
+        binding.toCurrency.setSelection(1)   // PKR
 
-        convertBtn.setOnClickListener { convertCurrency() }
-        swapBtn.setOnClickListener { swapCurrencies() }
+        binding.convertBtn.setOnClickListener { convertCurrency() }
+        binding.swapBtn.setOnClickListener { swapCurrencies() }
+
         val sharedPrefs = requireActivity()
             .getSharedPreferences("settings", Context.MODE_PRIVATE)
 
@@ -50,26 +55,25 @@ class ConvertFragment : Fragment(R.layout.fragment_convert) {
 
         val position = currencyList.indexOf(defaultCurrency)
         if (position >= 0) {
-            fromCurrency.setSelection(position)
+            binding.fromCurrency.setSelection(position)
         }
     }
 
     private fun convertCurrency() {
-        val amount = amountInput.text.toString().toDoubleOrNull()
+        val amount = binding.amountInput.text.toString().toDoubleOrNull()
 
         if (amount == null) {
-            resultText.text = "Enter valid amount"
+            binding.resultText.text = "Enter valid amount"
             return
         }
 
-        val from = fromCurrency.selectedItem.toString()
-        val to = toCurrency.selectedItem.toString()
+        val from = binding.fromCurrency.selectedItem.toString()
+        val to = binding.toCurrency.selectedItem.toString()
 
-        resultText.text = "Converting..."
+        binding.resultText.text = "Converting..."
 
         RetrofitInstance.api.getRates(from)
             .enqueue(object : Callback<CurrencyResponse> {
-
                 override fun onResponse(
                     call: Call<CurrencyResponse>,
                     response: Response<CurrencyResponse>
@@ -78,38 +82,31 @@ class ConvertFragment : Fragment(R.layout.fragment_convert) {
                         val rates = response.body()?.rates
                         val rate = rates?.get(to)
 
-                        if (rate != null && rates != null) {
-
-                            val fromRate = rates[from] ?: 1.0
-                            val result = amount * (rate / fromRate)
-
-                            val resultString =
-                                "$amount $from = %.2f $to".format(result)
-
-                            resultText.text = resultString
-
+                        if (rate != null) {
+                            val result = amount * rate
+                            val resultString = "$amount $from = %.2f $to".format(result)
+                            binding.resultText.text = resultString
                             saveHistory(resultString)
-
                         } else {
-                            resultText.text = "Conversion not available"
+                            binding.resultText.text = "Conversion not available"
                         }
                     } else {
-                        resultText.text = "API Error"
+                        binding.resultText.text = "API Error"
                     }
                 }
 
                 override fun onFailure(call: Call<CurrencyResponse>, t: Throwable) {
-                    resultText.text = "Check internet connection"
+                    binding.resultText.text = "Check internet connection"
                 }
             })
     }
 
     private fun swapCurrencies() {
-        val fromPos = fromCurrency.selectedItemPosition
-        val toPos = toCurrency.selectedItemPosition
+        val fromPos = binding.fromCurrency.selectedItemPosition
+        val toPos = binding.toCurrency.selectedItemPosition
 
-        fromCurrency.setSelection(toPos)
-        toCurrency.setSelection(fromPos)
+        binding.fromCurrency.setSelection(toPos)
+        binding.toCurrency.setSelection(fromPos)
     }
 
     private fun saveHistory(entry: String) {
@@ -117,9 +114,13 @@ class ConvertFragment : Fragment(R.layout.fragment_convert) {
             .getSharedPreferences("conversion_history", Context.MODE_PRIVATE)
 
         val oldHistory = sharedPrefs.getString("history", "") ?: ""
-        val newHistory =
-            if (oldHistory.isEmpty()) entry else "$oldHistory\n$entry"
+        val newHistory = if (oldHistory.isEmpty()) entry else "$oldHistory\n$entry"
 
         sharedPrefs.edit().putString("history", newHistory).apply()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

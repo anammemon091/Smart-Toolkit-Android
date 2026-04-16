@@ -1,57 +1,73 @@
 package com.example.currencyconverter
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.example.currencyconverter.databinding.FragmentCalculatorBinding
 
-class CalculatorFragment : Fragment(R.layout.fragment_calculator) {
+class CalculatorFragment : Fragment() {
 
-    private lateinit var inputText: TextView
+    private var _binding: FragmentCalculatorBinding? = null
+    private val binding get() = _binding!!
+
     private var currentInput = ""
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentCalculatorBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        inputText = view.findViewById(R.id.inputText)
+        binding.btnBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
 
         val buttons = listOf(
-            R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
-            R.id.btn4, R.id.btn5, R.id.btn6,
-            R.id.btn7, R.id.btn8, R.id.btn9,
-            R.id.btnPlus, R.id.btnMinus,
-            R.id.btnMultiply, R.id.btnDivide,
-            R.id.btnDot
+            binding.btn0, binding.btn1, binding.btn2, binding.btn3,
+            binding.btn4, binding.btn5, binding.btn6,
+            binding.btn7, binding.btn8, binding.btn9,
+            binding.btnPlus, binding.btnMinus,
+            binding.btnMultiply, binding.btnDivide,
+            binding.btnDot
         )
 
-        for (id in buttons) {
-            view.findViewById<Button>(id).setOnClickListener {
+        for (btn in buttons) {
+            btn.setOnClickListener {
                 val value = (it as Button).text.toString()
                 currentInput += value
-                inputText.text = currentInput
+                binding.inputText.text = currentInput
             }
         }
 
         // Clear
-        view.findViewById<Button>(R.id.btnClear).setOnClickListener {
+        binding.btnClear.setOnClickListener {
             currentInput = ""
-            inputText.text = ""
+            binding.inputText.text = ""
         }
 
         // Equals
-        view.findViewById<Button>(R.id.btnEquals).setOnClickListener {
-            try {
-                val result = eval(currentInput)
-                inputText.text = result.toString()
-                currentInput = result.toString()
-            } catch (e: Exception) {
-                inputText.text = "Error"
+        binding.btnEquals.setOnClickListener {
+            if (currentInput.isNotEmpty()) {
+                try {
+                    val result = eval(currentInput)
+                    binding.inputText.text = result.toString()
+                    currentInput = result.toString()
+                } catch (e: Exception) {
+                    binding.inputText.text = "Error"
+                }
             }
         }
     }
 
-    // Simple expression evaluator
+    // Baaki eval function wahi rahega jo aapka tha...
     private fun eval(expression: String): Double {
         return object : Any() {
             var pos = -1
@@ -72,8 +88,7 @@ class CalculatorFragment : Fragment(R.layout.fragment_calculator) {
 
             fun parse(): Double {
                 nextChar()
-                val x = parseExpression()
-                return x
+                return parseExpression()
             }
 
             fun parseExpression(): Double {
@@ -110,12 +125,17 @@ class CalculatorFragment : Fragment(R.layout.fragment_calculator) {
                     eat(')'.code)
                 } else {
                     while (ch in '0'.code..'9'.code || ch == '.'.code) nextChar()
-                    x = expression.substring(startPos, pos).toDouble()
+                    val part = expression.substring(startPos, pos)
+                    x = if (part.isNotEmpty()) part.toDouble() else 0.0
                 }
 
                 return x
             }
         }.parse()
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

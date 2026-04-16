@@ -26,6 +26,9 @@ android {
             )
         }
     }
+    buildFeatures {
+        viewBinding = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -43,6 +46,7 @@ android {
 }
 
 dependencies {
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation ("com.google.android.material:material:1.11.0")
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")

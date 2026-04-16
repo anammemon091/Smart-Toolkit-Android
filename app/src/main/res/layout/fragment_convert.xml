@@ -1,71 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="20dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
-
-    <TextView
-        android:text="Currency Converter 💱"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <EditText
-        android:id="@+id/amountInput"
-        android:hint="Enter Amount"
-        android:inputType="numberDecimal"
-        android:background="@drawable/edit_bg"
-        android:padding="12dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    android:background="@drawable/bg_gradient">
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_marginTop="12dp"
-        android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Spinner
-            android:id="@+id/fromCurrency"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
 
         <ImageButton
-            android:id="@+id/swapBtn"
-            android:src="@android:drawable/ic_menu_rotate"
-            android:background="@null"
-            android:layout_marginHorizontal="10dp"
-            android:layout_width="40dp"
-            android:layout_height="40dp"/>
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="#FFFFFF" />
 
-        <Spinner
-            android:id="@+id/toCurrency"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Currency Converter"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/convertBtn"
-        android:text="Convert"
-        android:layout_marginTop="16dp"
-        android:background= "@drawable/bg_gradient"
-        android:textColor="@android:color/white"
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/resultText"
-        android:text="Result will appear here"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="#1AFFFFFF"
+            app:cardCornerRadius="16dp"
+            app:strokeColor="#33FFFFFF"
+            app:strokeWidth="1dp"
+            app:cardElevation="0dp">
 
+            <EditText
+                android:id="@+id/amountInput"
+                android:hint="Enter Amount"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#B3FFFFFF"
+                android:inputType="numberDecimal"
+                android:background="@null"
+                android:padding="18dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="#1AFFFFFF"
+            app:cardCornerRadius="16dp"
+            app:strokeColor="#33FFFFFF"
+            app:strokeWidth="1dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Spinner
+                    android:id="@+id/fromCurrency"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#FFFFFF" />
+
+                <ImageButton
+                    android:id="@+id/swapBtn"
+                    android:src="@android:drawable/ic_menu_rotate"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    app:tint="#FFFFFF" />
+
+                <Spinner
+                    android:id="@+id/toCurrency"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#FFFFFF" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/convertBtn"
+            android:text="Convert Now"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#FFFFFF"
+            android:textColor="#2C3E50"
+            app:cornerRadius="16dp"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:elevation="4dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_marginTop="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="#33FFFFFF"
+            app:cardCornerRadius="16dp"
+            app:strokeColor="#4DFFFFFF"
+            app:strokeWidth="1.5dp"
+            app:cardElevation="0dp">
+
+            <TextView
+                android:id="@+id/resultText"
+                android:text="0.00"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:padding="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:shadowColor="#40000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="4"/>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
 </LinearLayout>
