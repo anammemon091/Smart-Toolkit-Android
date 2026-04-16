@@ -67,11 +67,13 @@ Add the following to your build.gradle:
 
 Gradle
 implementation 'com.google.code.gson:gson:2.10.1'
+
 implementation 'com.google.android.material:material:1.9.0'
 
 **🕹️ Live Demo**
 
 Experience the Smart Toolkit interface directly in your browser via Appetize.io:
+
 👉 [Run Live Preview] https://appetize.io/app/b_xb74gxsk5rjskung7nqm7gy4xi
 
 Build the APK and enjoy your toolkit!
